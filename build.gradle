@@ -1,0 +1,74 @@
+buildscript {
+	ext {
+		xjcVersion= '3.0.5'
+		jaxbOutputDir = "$buildDir/generated/cxf"
+		jaxb2BasicsVersion = '0.11.0'
+	}
+}
+
+plugins {
+	id 'org.springframework.boot' version '2.2.6.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id 'java'
+}
+
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+
+
+group = 'com.vw.nix'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenCentral()
+}
+
+
+
+dependencies {
+	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation group: 'io.micrometer', name: 'micrometer-core', version: '1.7.3'
+	implementation group: 'io.micrometer', name: 'micrometer-registry-prometheus', version: '1.7.3'
+	implementation group: 'log4j', name: 'log4j', version: '1.2.17'
+	implementation 'software.amazon.awssdk:s3:2.17.99'
+	implementation 'software.amazon.awssdk:sts:2.17.99'
+	implementation 'org.json:json:20200518'
+	implementation 'org.flywaydb:flyway-core:5.2.4'
+	implementation 'mysql:mysql-connector-java'
+	implementation fileTree(dir: 'lib', include: ['*.jar'])
+	implementation group: 'commons-io', name: 'commons-io', version: '2.5'
+	implementation 'org.hibernate:hibernate-envers'
+	implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+	implementation 'io.springfox:springfox-swagger2:2.9.2'
+	implementation ('org.springframework.boot:spring-boot-starter-web-services') {
+		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+	}
+
+//	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+//		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+//	}
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+	runtimeOnly 'com.h2database:h2'
+	testImplementation "com.github.tomakehurst:wiremock-jre8:2.32.0"
+}
+
+
+test {
+	useJUnitPlatform()
+}
+
+bootJar {
+	if (System.properties.deployInDocker) {
+		archiveFileName = "app.jar"
+	}
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
